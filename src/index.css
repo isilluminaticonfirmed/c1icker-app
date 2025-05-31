@@ -1,15 +1,16 @@
+/* src/index.css */
+
 /* Google Fonts Import: Raleway for heading, Lato for body */
-/* These fonts are popular and widely used, suitable for commercial projects. */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@700;900&display=swap');
 
 :root {
-  font-family: 'Lato', sans-serif; /* Default font for general text */
+  font-family: 'Lato', sans-serif; /* Default font for body text */
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark; /* Indicates support for both light and dark modes */
+  color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87); /* Light text color for dark background */
-  background-color: #1a1a2e; /* Deep blue-purple background for a sleek, minimalist look */
+  background-color: #1a1a2e; /* Deep blue-purple background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,25 +20,26 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center; /* Centers the content of #root */
-  min-width: 320px; /* Minimum width for smaller screens */
-  min-height: 100vh; /* Ensures the body takes full viewport height */
-  overflow: hidden; /* Hide scrollbars, we'll manage content overflow visually */
+  width: 100vw; /* Ensure body takes full viewport width */
+  height: 100vh; /* Ensure body takes full viewport height */
+  overflow-x: hidden; /* Prevent horizontal scrollbar if content overflows */
+  /* No 'display: flex' on body here; #root will handle centering */
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Raleway', sans-serif; /* Heading font for impact */
-  color: #e0f2f7; /* Light blue color for headings */
-  margin-bottom: 0.5em; /* Spacing below headings */
+  font-family: 'Raleway', sans-serif; /* Heading font */
+  color: #e0f2f7; /* Light blue for headings */
+  margin-bottom: 0.5em;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Subtle shadow for depth */
 }
 
 #root {
-  max-width: 1280px; /* Max width for the main application container */
-  margin: 0 auto; /* Centers the app horizontally */
-  padding: 2rem; /* Padding around the main app content */
-  text-align: center; /* Centers text within the root */
-  width: 100%; /* Takes full width up to max-width */
+  width: 100%; /* Make #root fill its parent (body) */
+  height: 100%; /* Make #root fill its parent (body) */
+  padding: 0; /* Remove padding from root; app-container will handle it */
+  text-align: center; /* Still good for default text alignment */
   box-sizing: border-box; /* Include padding in width calculation */
+  display: flex; /* Make #root a flex container */
+  justify-content: center; /* Center its child (app-container) horizontally */
+  align-items: center; /* Center its child (app-container) vertically */
 }

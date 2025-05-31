@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'; // Added useRef
-import './App.css'; // We'll use this for animations
-import './index.css'; // For basic global styles like font
+import React, { useState, useEffect, useRef } from 'react';
+import './App.css';
+import './index.css';
 
 function App() {
   // Initialize cubes from localStorage or start at 0
