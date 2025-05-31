@@ -58,8 +58,8 @@ body { /* Body background for consistency with primary-bg */
   background-color: var(--primary-bg);
 }
 .sidebar, .clicker-area, .community-section, .playtime-section,
-.ad-placeholder, .ad-placeholder-right, .theme-selection {
-  background-color: var(--secondary-bg); /* Apply secondary background to panels */
+.ad-placeholder, .ad-placeholder-right, .theme-selection, .upgrade-card {
+  background-color: var(--secondary-bg); /* Apply secondary background to panels and cards */
   color: var(--text-color); /* Ensure text color matches theme */
 }
 h1, h2, h3, h4 {
@@ -84,19 +84,33 @@ h1, h2, h3, h4 {
 .sidebar, .clicker-area {
   box-shadow: 0 8px 16px var(--shadow-color-dark); /* Themed shadows for main panels */
 }
-.theme-selection button { /* Apply theme to buttons in sidebars */
+.theme-selection button, .reset-button { /* Apply theme to buttons */
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
+    border: none;
+    padding: 8px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
-.theme-selection button:hover {
+.theme-selection button:hover, .reset-button:hover {
     background-color: var(--button-hover-bg-color);
+    transform: translateY(-2px);
 }
-.theme-selection button:active {
-    transform: translateY(1px); /* Little press effect */
+.theme-selection button:active, .reset-button:active {
+    transform: translateY(1px);
+}
+/* Active theme button styling */
+.theme-selection button.active {
+    background-color: var(--gain-color);
+    box-shadow: 0 0 10px var(--gain-color);
+    color: var(--secondary-bg); /* Darker text for active button */
 }
 
 
-/* --- General Component Styling (from previous steps, now integrated with themes) --- */
+/* --- General Component Styling --- */
 .sidebar {
   width: 280px; /* Fixed width for sidebars */
   border-radius: 15px;
@@ -137,7 +151,7 @@ h1, h2, h3, h4 {
 }
 
 .cube-count-number {
-    display: inline-block; /* Allows for potential future individual animations on the number */
+    display: inline-block;
 }
 
 .gain-per-click {
@@ -242,13 +256,140 @@ h1, h2, h3, h4 {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
+/* --- Floating Image Styling --- */
+@keyframes floatUp {
+    0% { transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -150%) rotate(calc(var(--rotation, 0deg) + 720deg)) scale(0.8); opacity: 0; }
+}
+@keyframes pulseScale {
+    0% { transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1); }
+    50% { transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1.1); }
+    100% { transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1); }
+}
 
-/* --- Placeholders for Future Content (basic styling) --- */
+.floating-image {
+    position: absolute;
+    cursor: pointer;
+    animation: floatUp 10s forwards linear, pulseScale 2s infinite ease-in-out; /* Float up and also pulse */
+    z-index: 5; /* Below floating clicks, above main content */
+}
+.floating-image:hover {
+    filter: brightness(1.2); /* Highlight on hover */
+}
+.floating-image:active {
+    transform: translate(-50%, -50%) scale(0.9); /* Squish on click */
+}
+
+/* --- Shop Upgrades Styling --- */
+.shop-upgrades {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.upgrade-card {
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s ease-out, box-shadow 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    user-select: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.upgrade-card:hover:not([disabled]) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.upgrade-card:active:not([disabled]) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.upgrade-card h3 {
+    color: var(--heading-color);
+    margin: 0 0 5px 0;
+    font-size: 1.2em;
+}
+
+.upgrade-card p {
+    color: var(--text-color);
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.3;
+}
+
+.upgrade-card .upgrade-effect {
+    font-weight: bold;
+    color: var(--currency-color);
+    font-size: 1em;
+}
+
+.upgrade-card .upgrade-cost {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.upgrade-card .upgrade-cost span {
+    color: var(--gain-color);
+}
+
+.upgrade-card .upgrade-level {
+    font-size: 0.85em;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+/* States for upgrade cards */
+.upgrade-card.can-afford {
+    background-color: rgba(60, 179, 113, 0.2);
+    border-color: var(--currency-color);
+}
+
+.upgrade-card.cannot-afford {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.3);
+}
+
+.upgrade-card.cannot-afford .upgrade-cost span {
+    color: #ff6347;
+}
+
+.upgrade-card.max-level {
+    background-color: rgba(128, 128, 128, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
+    cursor: default;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: none;
+}
+
+.upgrade-card.max-level .max-level-text {
+    color: var(--heading-color);
+    font-size: 1.2em;
+    width: 100%;
+    text-align: center;
+}
+
+/* --- Placeholders and other sections --- */
 .community-section,
 .playtime-section,
 .ad-placeholder,
-.ad-placeholder-right,
-.theme-selection {
+.ad-placeholder-right {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     padding: 15px;
@@ -258,14 +399,29 @@ h1, h2, h3, h4 {
     text-align: center;
     font-size: 0.9em;
 }
-.community-cube-icon {
-    width: 50px;
-    height: 50px;
-    background-color: var(--cube-face-color); /* Themed cube icon */
-    border-radius: 8px;
-    margin: 10px auto;
-    border: 1px solid var(--border-color); /* Themed border */
-    transform: rotateX(20deg) rotateY(20deg); /* Small rotation for 3D effect */
+
+/* --- Theme selection buttons container --- */
+.theme-selection .theme-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* --- Reset Button --- */
+.reset-button {
+    margin-top: 30px;
+    background-color: #dc3545; /* Red for danger action */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.reset-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+.reset-button:active {
+    transform: translateY(1px);
 }
 
 
@@ -292,5 +448,9 @@ h1, h2, h3, h4 {
   .funny-quip {
       font-size: 0.8em;
       bottom: 10px;
+  }
+  .floating-image {
+      width: 30px; /* Smaller images on small screens */
+      height: 30px;
   }
 }
