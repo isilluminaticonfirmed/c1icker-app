@@ -1,35 +1,128 @@
-/* src/App.css */
+/*
+ * C1icker App Specific Styles and Animations
+ * Includes core layout, clicker effects, animated cube, quips, and theming.
+ */
 
+/* --- App Container & Theming Variables --- */
 .app-container {
   display: flex;
-  justify-content: space-between; /* Distributes space between the three main sections */
-  align-items: flex-start; /* Aligns items to the top of the container */
+  justify-content: space-between; /* Spreads out main sections */
+  align-items: flex-start; /* Aligns content to the top within its section */
   max-width: 1280px; /* Limits the overall width of the app content */
   width: 100%; /* Allows app to shrink to 100% of parent's width (up to max-width) */
   height: 100%; /* Allows app to fill height of parent (#root) */
-  padding: 20px; /* Overall padding around the app content */
+  padding: 20px; /* Padding around the entire app content */
   gap: 20px; /* Space between the main clicker area and sidebars */
   box-sizing: border-box; /* Ensures padding is included in element's total width/height */
-  position: relative; /* For potential background animations later */
-  overflow: hidden; /* Prevent content from overflowing and causing scrollbars */
+  position: relative; /* Needed for any absolutely positioned children, like background effects */
+  overflow: hidden; /* Prevents content from overflowing and causing scrollbars */
+
+  /* Default Theme Variables (These are the base colors, overridden by theme classes) */
+  --primary-bg: #1a1a2e; /* Deep blue-purple background */
+  --secondary-bg: #2c2c54; /* Slightly lighter dark blue for panels/cards */
+  --text-color: rgba(255, 255, 255, 0.87); /* Light text for readability */
+  --heading-color: #e0f2f7; /* Soft light blue for headings */
+  --currency-color: #8affc8; /* Bright green for the main currency display */
+  --gain-color: #f7b731; /* Vibrant orange/gold for click gains */
+  --border-color: rgba(255, 255, 255, 0.2); /* Subtle border color for elements */
+  --shadow-color-dark: rgba(0, 0, 0, 0.4); /* Darker shadows for main elements */
+  --shadow-color-light: rgba(0, 0, 0, 0.3); /* Lighter shadows for side elements */
+  --cube-face-color: rgba(100, 100, 255, 0.3); /* Default semi-transparent blue cube face */
+  --cube-face-shadow-color: rgba(100, 100, 255, 0.4); /* Shadow/glow for cube faces */
+  --button-bg-color: var(--currency-color); /* Button background, using currency color by default */
+  --button-text-color: var(--primary-bg); /* Button text, using primary background by default */
+  --button-hover-bg-color: var(--gain-color); /* Button hover effect color */
+}
+
+/* --- Theme Specific Overrides --- */
+/* Lava Theme: Overrides the default CSS variables */
+.lava-theme {
+  --primary-bg: #3e0101; /* Deep dark red */
+  --secondary-bg: #630505; /* Darker red for panels */
+  --text-color: rgba(255, 240, 220, 0.9); /* Creamy text */
+  --heading-color: #ff9900; /* Bright orange for headings */
+  --currency-color: #ff4500; /* Orange-red for currency (like molten lava) */
+  --gain-color: #ffda00; /* Gold/yellow for gains (embers) */
+  --border-color: rgba(255, 100, 0, 0.3); /* Orange transparent border */
+  --shadow-color-dark: rgba(0, 0, 0, 0.6);
+  --shadow-color-light: rgba(0, 0, 0, 0.4);
+  --cube-face-color: rgba(255, 69, 0, 0.4); /* Semi-transparent lava orange cube face */
+  --cube-face-shadow-color: rgba(255, 69, 0, 0.7); /* Stronger orange glow */
+  --button-bg-color: var(--currency-color);
+  --button-text-color: var(--primary-bg);
+  --button-hover-bg-color: var(--gain-color);
+}
+
+/* Apply theme variables to elements */
+body { /* Body background for consistency with primary-bg */
+  background-color: var(--primary-bg);
+}
+.sidebar, .clicker-area, .community-section, .playtime-section,
+.ad-placeholder, .ad-placeholder-right, .theme-selection {
+  background-color: var(--secondary-bg); /* Apply secondary background to panels */
+  color: var(--text-color); /* Ensure text color matches theme */
+}
+h1, h2, h3, h4 {
+  color: var(--heading-color); /* Apply heading color */
+}
+.cube-counter {
+  color: var(--currency-color); /* Apply currency color */
+  text-shadow: 0 0 10px var(--currency-color); /* Themed glow for currency */
+}
+.gain-per-click {
+  color: var(--text-color); /* Use general text color for gain info */
+}
+.floating-click {
+  color: var(--gain-color); /* Apply gain color */
+  text-shadow: 0 0 8px var(--gain-color); /* Themed glow for floating numbers */
+}
+.growing-cube .face {
+  border: 2px solid var(--border-color); /* Themed border */
+  background: var(--cube-face-color); /* Themed cube face color */
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1), 0 0 20px var(--cube-face-shadow-color); /* Themed cube shadow */
+}
+.sidebar, .clicker-area {
+  box-shadow: 0 8px 16px var(--shadow-color-dark); /* Themed shadows for main panels */
+}
+.theme-selection button { /* Apply theme to buttons in sidebars */
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+}
+.theme-selection button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+.theme-selection button:active {
+    transform: translateY(1px); /* Little press effect */
+}
+
+
+/* --- General Component Styling (from previous steps, now integrated with themes) --- */
+.sidebar {
+  width: 280px; /* Fixed width for sidebars */
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80vh; /* Ensures sidebars are tall enough */
+  box-sizing: border-box;
 }
 
 .clicker-area {
   flex-grow: 1; /* Allows the clicker area to take up available space */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers content vertically within the area */
-  align-items: center; /* Centers content horizontally within the area */
-  background-color: #2c2c54; /* Slightly lighter dark blue for distinction */
-  border-radius: 15px; /* Rounded corners */
-  padding: 40px; /* Padding inside the clicker area */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Prominent shadow for depth */
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  padding: 40px;
   cursor: pointer; /* Indicates it's clickable */
-  position: relative; /* Crucial for positioning floating numbers absolutely within it */
-  overflow: hidden; /* Ensures floating numbers don't extend outside its bounds */
+  position: relative; /* Crucial for positioning floating numbers and quips */
+  overflow: hidden; /* Ensures child elements (like floating clicks) don't extend outside */
   transition: transform 0.1s ease-out; /* Smooth squash/scale transition on click */
   user-select: none; /* Prevents text selection when rapidly clicking */
-  min-height: 80vh; /* Ensures it's tall enough, responsive to view height */
+  min-height: 80vh;
+  box-sizing: border-box;
 }
 
 .clicker-area:active {
@@ -37,93 +130,167 @@
 }
 
 .cube-counter {
-  font-size: 4em; /* Large, prominent display for the cube count */
-  font-weight: 900; /* Extra bold */
-  color: #8affc8; /* Bright green for currency, stands out */
-  text-shadow: 0 0 10px rgba(138, 255, 200, 0.5); /* Glowing effect */
-  margin-top: 20px; /* Spacing from title */
+  font-size: 4em;
+  font-weight: 900;
+  margin-top: 20px;
   white-space: nowrap; /* Prevents the number from wrapping lines */
 }
 
 .cube-count-number {
-    display: inline-block; /* Allows applying transforms later if needed */
+    display: inline-block; /* Allows for potential future individual animations on the number */
 }
 
 .gain-per-click {
-  font-size: 1.2em; /* Readable size for gain info */
-  color: #b3cde0; /* Softer blue for informational text */
-  margin-top: 10px; /* Spacing below the counter */
+  font-size: 1.2em;
+  margin-top: 10px;
 }
 
 /* --- Floating Click Animation --- */
 @keyframes floatAndFade {
   0% {
-    opacity: 1; /* Start fully visible */
-    transform: translateY(0) scale(1); /* No vertical movement, normal size */
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
   100% {
-    opacity: 0; /* End fully transparent */
-    transform: translateY(-50px) scale(1.2); /* Float up 50px, slightly grow */
+    opacity: 0;
+    transform: translateY(-50px) scale(1.2);
   }
 }
 
 .floating-click {
-  position: absolute; /* Positioned relative to .clicker-area */
-  font-size: 1.8em; /* Size of the +Number text */
+  position: absolute;
+  font-size: 1.8em;
   font-weight: bold;
-  color: #f7b731; /* Vibrant orange/gold color for gain */
-  text-shadow: 0 0 8px rgba(247, 183, 49, 0.7); /* Subtle glow */
-  animation: floatAndFade 1s forwards ease-out; /* Apply animation for 1 second */
-  pointer-events: none; /* Crucial: allows clicks to pass through this element */
-  z-index: 10; /* Ensures it appears above other elements */
+  animation: floatAndFade 1s forwards ease-out;
+  pointer-events: none;
+  z-index: 10;
 }
 
-/* Sidebar Styling - for both left and right placeholders */
-.sidebar {
-  width: 280px; /* Fixed width for consistency */
-  background-color: #2c2c54; /* Matches clicker area background */
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for sidebars */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center content horizontally */
-  min-height: 80vh; /* Matches main area height for visual balance */
+/* --- Growing Cube Styling (Left Sidebar) --- */
+.growing-cube-container {
+    width: 150px;
+    height: 150px;
+    perspective: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    position: relative;
 }
 
-/* Placeholders for content that will be added later */
-.growing-cube-placeholder,
-.leaderboard-placeholder {
+.growing-cube {
     width: 100px;
     height: 100px;
-    background-color: #5b2c6f; /* A placeholder purple color */
-    border-radius: 10px;
-    margin-top: 20px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-30deg) rotateY(45deg) scale(var(--cube-scale, 1));
+    transition: transform 0.3s ease-out;
+    animation: rotateCube var(--cube-rotation-speed, 10s) infinite linear;
+}
+
+.growing-cube .face {
+    position: absolute;
+    width: 100px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 0.8em;
-    color: #ddd;
+    backface-visibility: hidden;
 }
 
-/* Basic responsiveness for smaller screens */
+/* Positioning of cube faces for 3D effect */
+.growing-cube .front { transform: rotateY(0deg) translateZ(50px); }
+.growing-cube .back { transform: rotateY(180deg) translateZ(50px); }
+.growing-cube .right { transform: rotateY(90deg) translateZ(50px); }
+.growing-cube .left { transform: rotateY(-90deg) translateZ(50px); }
+.growing-cube .top { transform: rotateX(90deg) translateZ(50px); }
+.growing-cube .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+/* Cube Rotation Animation */
+@keyframes rotateCube {
+  from { transform: rotateX(-30deg) rotateY(0deg) scale(var(--cube-scale, 1)); }
+  to { transform: rotateX(-30deg) rotateY(360deg) scale(var(--cube-scale, 1)); }
+}
+
+/* --- Funny Quip Styling --- */
+@keyframes quipFadeIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes quipFadeOut {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+}
+
+.funny-quip {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    opacity: 0;
+    animation: quipFadeIn 0.5s forwards, quipFadeOut 0.5s 4.5s forwards;
+    pointer-events: none;
+    z-index: 15;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+
+/* --- Placeholders for Future Content (basic styling) --- */
+.community-section,
+.playtime-section,
+.ad-placeholder,
+.ad-placeholder-right,
+.theme-selection {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.9em;
+}
+.community-cube-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--cube-face-color); /* Themed cube icon */
+    border-radius: 8px;
+    margin: 10px auto;
+    border: 1px solid var(--border-color); /* Themed border */
+    transform: rotateX(20deg) rotateY(20deg); /* Small rotation for 3D effect */
+}
+
+
+/* --- Basic Responsiveness --- */
 @media (max-width: 768px) {
   .app-container {
-    flex-direction: column; /* Stack sections vertically on small screens */
+    flex-direction: column;
     padding: 10px;
     gap: 10px;
-    align-items: center; /* Center items when stacked */
+    align-items: center;
   }
   .sidebar {
-    width: 95%; /* Sidebars take more width on small screens */
-    min-height: auto; /* Allow height to adjust */
+    width: 95%;
+    min-height: auto;
   }
   .clicker-area {
-    min-height: 50vh; /* Adjust height for smaller screens */
+    min-height: 50vh;
     padding: 20px;
-    width: 95%; /* Clicker area takes more width on small screens */
+    width: 95%;
   }
   .cube-counter {
-    font-size: 3em; /* Smaller font on small screens */
+    font-size: 3em;
+  }
+  .funny-quip {
+      font-size: 0.8em;
+      bottom: 10px;
   }
 }
